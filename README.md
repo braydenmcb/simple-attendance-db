@@ -1,18 +1,20 @@
 # simple-attendance-db
 
-USE:
-
-FrontEnd:
+## FrontEnd:
 `npm run dev` in FrontEnd folder
 
-backend:
-create venv:
-`/venv/Scripts/Activate` on windows
-`python3 -m venv venv`
-`source venv/bin/activate` on Mac
+## backend: <br>
 
-run server.py
-'python server.py` on windows
+create venv:<br><br>
+on windows: <br>
+`/venv/Scripts/Activate` 
+<br>
+on Mac: <br>
+`python3 -m venv venv` <br>
+`source venv/bin/activate`
+<br><br>
+run server.py <br>
+`python server.py` on windows <br>
 `python3 -m server.py` on Mac
 
 
