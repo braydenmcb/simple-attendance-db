@@ -1,3 +1,7 @@
+# student db (FOR TESTING PURPOSES ONLY)
+flask-server/data/*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
