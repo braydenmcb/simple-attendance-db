@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
 
@@ -34,7 +34,45 @@ def remove_student(student_id):
         return jsonify({"error": "Student not found"}), 404
     return jsonify({"message": "Student removed"}), 200
 
+@app.route('/api/students', methods=['POST'])
+def add_student():
+    student = request.get_json()
 
+    print("Received student:", student)
+    print(f"Adding student: {student["first_name"]} {student["last_name"]}")
+
+    required_fields = ['first_name', 'last_name', 'age', 'gender', 'type', 'phone_number']
+    for field in required_fields:
+        if field == "":
+            if field in required_fields:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+            field = None
+
+    #NOTE: for picture input, replace once image upload is implemented
+    pictures = ['/id-pics/male-test-image.jpg', '/id-pics/female-test-image.jpg']
+    student['picture'] = pictures[0] if student["gender"] == "male" else pictures[1]
+        
+
+    print("all required fields present")
+    
+    conn = sqlite3.connect('./data/students.db')
+    c = conn.cursor()
+    
+    try:
+        c.execute("""INSERT INTO students (first_name, last_name, age, gender, type, phone_number, tkd_rank, kb_rank, bjj_rank, picture) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (student['first_name'], student['last_name'], student['age'],
+                        student["gender"], student['type'], student['number'], student['tkd_rank'], 
+                        student['kb_rank'], student['bjj_rank'], student['picture']))
+        print("Student added successfully.")
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Student added"}), 201
+    except Exception as e:
+        print("An error occurred:", e)
+        return jsonify({"error": str(e)}), 500
+              
+              
 # students API Route
 @app.route('/api/students', methods=['GET'])
 def students():

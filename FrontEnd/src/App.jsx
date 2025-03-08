@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import AddStudent from './components/addStudent';
 
 const App = () => {
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
+  const [currentComponent, setCurrentComponent] = useState("StudentList");
 
   // Fetch student data from the backend
   const fetchAPI = async () => {
@@ -13,6 +15,7 @@ const App = () => {
       setStudents(response.data);
     } catch (error) {
       console.error("Error fetching students:", error);
+      setError(error);
     }
   };
 
@@ -37,21 +40,34 @@ const App = () => {
     return <div>Error: {error}</div>;
   }
 
-  return (
-    <div className="App">
-      <h1>Student List</h1>
-      <div className="card">
-        {students.map((students) => (
-        <li key={students.id}>
-          <span> {students.first_name} {students.last_name} </span>
-          <button onClick={() => removeStudent(students.id)}>
-            Remove
-          </button>
-        </li>
-        ))} 
-      </div>
+return (
+  <div className="App">
+    <div className="header">
+      <button onClick={fetchAPI}>Refresh</button>
+      <button onClick={() => setCurrentComponent("StudentList")}>Student List</button>
+      <button onClick={() => setCurrentComponent("AddStudent")}>Add Student</button>
     </div>
-  );
+
+    {/* Conditional Rendering */}
+    {currentComponent === "StudentList" ? (
+      <div className="card">
+        <h1>Student List</h1>
+        <ul>
+          {students.map((student) => (
+            <li key={student.id}>
+              <span>
+                {student.first_name} {student.last_name}
+              </span>
+              <button onClick={() => removeStudent(student.id)}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <AddStudent fetchAPI={fetchAPI} />
+    )}
+  </div>
+);
 };
 
 export default App;
